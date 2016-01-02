@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+
+  
+  
+
+  
+  
+  
+
+  
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.js"></script>
+
+  
+
+  
+
+  
+
+  
+    <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+  
+
+  
+
+  <style type="text/css">
+    #blank, table, th, td {
+    border: 2px solid #724ABC;
+    border-collapse: collapse;
+    background-color:#430EA5;
+    position:static;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#warning
+{
+  display: none; /* set it to block to make it visible */
+}
+
+table{
+  margin: 10px;
+}
+
+#solid
+{
+    border-collapse: collapse;
+    background-color:#444444;
+    position:absolute;
+    left: 50px;
+    top: 10px;
+}
+
+#goal
+{
+  background-color:#33B333;
+  left: 90px;
+}
+
+#twx
+{
+  background-color:#D457E0;
+  left: 130px;
+}
+
+#thx
+{
+  background-color:#4AB0F0;
+  left: 170px;
+}
+
+#death
+{
+  background-color: #990000;
+  left: 210px;
+}
+
+#bluePortal
+{
+  background-color: #0000FF;
+  left: 250px;
+}
+
+#orangePortal
+{
+  background-color: #FF8000;
+  left: 290px;
+}
+
+#optional
+{
+  background-color: #B3B3B3;
+  left: 330px;
+  color: black;
+}
+
+.addable
+{
+  position:absolute;
+  top: 10px;
+  border: 2px solid #724ABC;
+  width: 30px;
+  height: 30px;
+  color: white;
+  font-size: 10px;
+  font-family: Segoe UI;
+  font-weight: lighter;
+  text-align: center;
+  vertical-align: middle;
+}
+
+#rkey
+{
+  background-color:#430EA5;
+  left: 370px;
+}
+
+#gkey
+{
+  background-color:#430EA5;
+  left: 410px;
+}
+
+#bkey
+{
+  background-color:#430EA5;
+  left: 450px;
+}
+
+#rlock
+{
+  background-color:#870EA5;
+  left: 490px;
+}
+
+#glock
+{
+  background-color:#42806E;
+  left: 530px;
+}
+
+#block /*that is Blue Lock, not a block*/
+{
+  background-color:#2E1A87;
+  left: 570px;
+}
+
+/*#spawn
+{
+  background-color:#430EA5;
+  left: 610px;
+  padding-top: 7px;
+  height: 23px;
+}*/
+
+#size{
+  position: absolute;
+  top: 15px;
+  right: 20px;
+}
+
+#SpawnX{
+  position: absolute;
+  top: 15px;
+  right: 180px;
+}
+
+#SpawnY{
+  position: absolute;
+  top: 15px;
+  right: 145px;
+}
+
+#SpawnTxt{
+  position: absolute;
+  top: 0px;
+  right: 215px;
+}
+
+#GridTxt{
+  position: absolute;
+  top: 0px;
+  right: 60px;
+}
+
+td{
+  color: white;
+  font-size: 10;
+  /*padding:50px;*/
+}
+.selector
+{
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 950px;
+  background-color: #EEE;
+  padding: 10px;
+}
+
+.options
+{
+  position: relative;
+  bottom: 0;
+  left: 0;
+  width: 950px;
+  /*height: 30px;*/
+  background-color: #EEE;
+  padding: 10px;
+}
+
+#TileField
+{
+  padding-left: 250px;
+}
+  </style>
+
+  <title>Tiles Designer by SamyBencherif</title>
+
+  
+    
+
+
+
+
+<script type='text/javascript'>//<![CDATA[
+window.onload=function(){
+
+}//]]> 
+
+</script>
+
+  
+</head>
+
+<body>
+  <!--<div style="background:#430EA5;height:100px;width:100px;position:static;outline:#724ABC solid;"></div>
+-->
+<!--#724ABC;-->
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script>
+/*
+function funAnimation() {
+    $("div").animate({
+        height: m + "px",
+        width: m + "px"
+    }, 1000);
+    m += 100;
+}
+
+var m = 100;
+*/
+
+var levelSize = 4;
+var pendingSize = 4;
+var bluePortalCount = 0;
+var orangePortalCount = 0;
+var selected = null;
+var mouseDown = 0;
+var spawnPointCount = 0;
+
+/*
+0: Blank
+1: Stepped
+2: Solid
+3: Goal
+4: 2x
+5: 3x
+6: Death
+7: Blue Portal
+8: Orange Portal
+9: Optional
+*/
+
+function Decode(content, color)
+{
+	if (content=="blank")
+  {
+		  if (color=="rgb(67, 14, 165)")
+      	return 0;
+      else if (color=="rgb(68, 68, 68)")
+      	return 2;
+      else if (color=="rgb(51, 179, 51)")
+      	return 3;
+      else if (color=="rgb(0, 0, 255)")
+      	return 7;
+      else if (color=="rgb(255, 128, 0)")
+      	return 8;
+      else if (color=="rgb(179, 179, 179)")
+      	return 9;
+      else
+      	return false; //not registered, therefore invalid
+  }
+  else
+  {
+  	if (content=="2x")
+    	return 4;
+    else if (content=="3x")
+    	return 5;
+    else if (content=="X")
+    	return 6;
+    else if (content.indexOf('RKey')>-1)
+    	return 10;
+    else if (content.indexOf('GKey')>-1)
+    	return 12;
+    else if (content.indexOf('BKey')>-1)
+    	return 14;
+    else if (content.indexOf('RLock')>-1)
+    	return 11;
+    else if (content.indexOf('GLock')>-1)
+    	return 13;
+    else if (content.indexOf('BLock')>-1)
+    	return 15;
+    else
+    	return false;
+  }
+}
+
+function GetLevelData()
+{
+		var output = [];
+    var row = [];
+    var board = document.getElementsByTagName("td");
+    var n = document.getElementsByTagName("Table")[0].rows.length;
+    //alert(n);
+    //alert(board);
+    for (var i=0; i<board.length; i++)
+    {
+    	var myColor = board[i].style.backgroundColor;
+      if (myColor=="")
+      	myColor = "rgb(67, 14, 165)";
+      var myContent = board[i].innerHTML;
+      if (myContent=="")
+      	myContent = "blank";
+			row.push(Decode(myContent, myColor));
+      if (row.length >= n)
+      {
+      	output.push(row);
+        row = [];
+      }
+    }
+    return ReformatArray(output);
+}
+
+function ReformatArray(thearray)
+{
+	var n = thearray.length;
+  var out = [];
+  var col = [];
+  for (var j=0; j<n; j++)
+  {
+  	col = []
+  	for (var i=n-1; i>=0; i--)
+    {
+    	col.push(thearray[i][j]);
+    }
+    out.push(col);
+  }
+  return out;
+}
+
+function StringRep(thearray)
+{
+	var out = []
+  for (var i=0; i<thearray.length; i++)
+  {
+  	out.push("["+thearray[i]+"]");
+  }
+ 	return "["+out+"]";
+}
+
+function reset()
+{
+	if (confirm('This will permanently delete your level !'))
+		InitSize();
+}
+
+function GetLevelPost()
+{
+    var spawnx = document.getElementById("SpawnX").value-1;
+    var spawny = document.getElementById("SpawnY").value-1;
+    return StringRep(GetLevelData())+"["+[parseInt(spawnx), parseInt(spawny)]+"]";
+}
+
+function submit()
+{
+    document.getElementsByName("Level Data")[0].value = GetLevelPost(); //this isn't a great idea, but it works
+    document.forms["myForm"].submit();
+}
+
+
+function LevelDataToMsg()
+{
+    alert(GetLevelPost());
+}
+
+function LevelDataToConsole()
+{
+    console.log(GetLevelPost());
+}
+
+function allowDrop(ev) {
+    ev.preventDefault();
+}
+
+function drag(ev) {
+	var thing = window.getComputedStyle(ev.target, null).getPropertyValue('background-color');
+  var addables = document.getElementsByClassName("addable")
+  for (var i=0; i<addables.length; i++)
+  {
+  	addables[i].style.border = "2px solid #724ABC";
+  }
+  selected = null;
+	ev.dataTransfer.setData("color", thing);
+  ev.dataTransfer.setData("content", ev.target.id);
+}
+
+function select(thing)
+{
+	//alert(thing);
+  var addables = document.getElementsByClassName("addable")
+  for (var i=0; i<addables.length; i++)
+  {
+  	addables[i].style.border = "2px solid #724ABC";
+  }
+  if (selected==null || selected.innerHTML != thing.innerHTML)
+  {
+  	thing.style.border = "2px solid #FFFF00";
+  	selected = thing;
+  }
+  else
+  {
+  	selected = null
+  }
+}
+
+document.body.onmousedown = function() { 
+  mouseDown = 1;
+}
+document.body.onmouseup = function() {
+  mouseDown = 0;
+}
+
+function paint(thing, override)
+{
+	if (selected && (mouseDown||override))
+  {
+  	//alert(thing);
+  	assign(thing, window.getComputedStyle(selected, null).getPropertyValue('background-color'), selected.id);
+  }
+	//thing.innerHTML = "horse";
+}
+
+function assign(target, mycolor, myContents)
+{
+	//alert(target.style.backgroundColor);
+    
+    //alert(document.getElementsByTagName("td").length);
+    //alert(mycolor);
+    
+    if (target.style.backgroundColor=="rgb(0, 0, 255)" && mycolor!="rgb(0, 0, 255)") // || not being replaced by blue
+    {
+    	bluePortalCount--;
+      //decrease portals greater than removed one by 1
+      
+      var board = document.getElementsByTagName("td");
+      
+      //alert(target.innerHTML);
+      
+      var c = 1;
+      
+      if (target.innerHTML != "")
+      	c = parseInt(target.innerHTML);
+      
+      for (var i=0; i<board.length; i++)
+      {
+      	if (board[i].style.backgroundColor=="rgb(0, 0, 255)")
+        {
+          
+          if (board[i].innerHTML!="")
+          {
+          	if (parseInt(board[i].innerHTML)>c)
+            {
+            	if (parseInt(board[i].innerHTML)!=2)
+            		board[i].innerHTML = "" + (parseInt(board[i].innerHTML)-1);
+             	else
+              	board[i].innerHTML = "";
+            }
+          }
+          
+        }
+      }
+      
+    } else if (target.style.backgroundColor=="rgb(255, 128, 0)" && mycolor!="rgb(255, 128, 0)")   //rgb(255, 128, 0)
+    {
+    	    	orangePortalCount--;
+      //decrease portals greater than removed one by 1
+      
+      var board = document.getElementsByTagName("td");
+      
+      //alert(target.innerHTML);
+      
+      var c = 1;
+      
+      if (target.innerHTML != "")
+      	c = parseInt(target.innerHTML);
+      
+      for (var i=0; i<board.length; i++)
+      {
+      	if (board[i].style.backgroundColor=="rgb(255, 128, 0)")
+        {
+          
+          if (board[i].innerHTML!="")
+          {
+          	if (parseInt(board[i].innerHTML)>c)
+            {
+            	if (parseInt(board[i].innerHTML)!=2)
+            		board[i].innerHTML = "" + (parseInt(board[i].innerHTML)-1);
+             	else
+              	board[i].innerHTML = "";
+            }
+          }
+          
+        }
+      }
+    }
+    
+    var tileData = document.getElementById(myContents).innerHTML;
+    
+    var toBePainted = false;
+    
+		if (!((tileData=="Orange\nPortal" && orangePortalCount>=4) || (tileData=="Blue\nPortal" && bluePortalCount>=4)))
+    {
+    	toBePainted = true;
+    }
+    
+   if (tileData=="Blue\nPortal" && target.style.backgroundColor!="rgb(0, 0, 255)" && bluePortalCount<4) // && not replacing blue
+   {
+   	//alert("blue portal!");
+    bluePortalCount++;
+    //alert(bluePortalCount);
+    if (bluePortalCount>1)
+    {
+      target.innerHTML = bluePortalCount;
+      target.style.width = 2*(200/levelSize)+"px";
+      target.style.height = 2*(200/levelSize)+"px";
+      //target.style.padding = "0px";
+    }
+    else
+    {
+    	target.innerHTML = "";
+    }
+   }
+   else if (tileData=="Orange\nPortal" && target.style.backgroundColor!="rgb(255, 128, 0)" && orangePortalCount<4) // && not replacing orange
+   {
+   	//alert("blue portal!");
+    orangePortalCount++;
+    if (orangePortalCount>1)
+    {
+      target.innerHTML = orangePortalCount;
+      target.style.width = 2*(200/levelSize)+"px";
+      target.style.height = 2*(200/levelSize)+"px";
+      //target.style.padding = "0";
+    }
+    else
+    {
+    	target.innerHTML = "";
+    }
+   }
+   
+   if (toBePainted)
+   		target.style.backgroundColor = mycolor;
+   
+   //alert('"'+tileData+'"');
+   
+   tileData = tileData.replace('width="30"', 'width="' + (200/levelSize) + '"')
+   tileData = tileData.replace('height="30"', 'height="' + (200/levelSize) + '"')
+   
+  if (tileData == "Death" || tileData == "2x" || tileData == "3x" || tileData.indexOf('img')>-1)
+  {
+  	if (tileData == "Death")
+    	target.innerHTML = "X";
+   	else
+  		target.innerHTML = tileData;
+    target.style.width = 2*(200/levelSize)+"px";
+    target.style.height = 2*(200/levelSize)+"px";
+    //target.style.padding = "0";
+  }
+  /*else if ()
+  {
+  ev.target.innerHTML = tileData;
+  //ev.target.style.padding = "0";
+  }*/
+  else if ((target.style.backgroundColor!="rgb(0, 0, 255)" || tileData!="Blue\nPortal") && (tileData!="Orange\nPortal" || target.style.backgroundColor!="rgb(255, 128, 0)"))
+  {
+  target.innerHTML = "";
+  //clear inner html
+  }
+}
+
+
+
+function drop(ev) {
+    ev.preventDefault();
+    var target = ev.target;
+    if (ev.target.nodeName=="IMG")
+    {
+      target = ev.target.parentNode;
+    }
+    
+  	var mycolor = ev.dataTransfer.getData("color");
+    var myContents = ev.dataTransfer.getData("content");
+  	assign(target, mycolor, myContents);
+}
+
+function PollSizeChange()
+{
+		//alert("howdy");
+  prev_levelSize = levelSize;
+	levelSize = parseInt(document.getElementById("size").value);
+  
+  //don't think this ever happens..?
+  if (2>levelSize || levelSize>10)
+  {
+  	levelSize = prev_levelSize;
+  }
+  
+  if (levelSize<prev_levelSize)
+  {
+  	var lost = 0;
+    for (var i=prev_levelSize; i>levelSize; i--)
+    {
+    	lost += i*2-1;
+    }
+    
+    pendingSize = levelSize; //save selected size as pending
+    levelSize = prev_levelSize; //cancel change
+    
+    //show warning
+    //alert("Warning! Downsizing will delete " + lost + " tiles.");
+    document.getElementById("warning text").innerHTML = "Warning! Downsizing will delete " + lost + " tiles.";
+    document.getElementById("warning").style.display = "block";
+
+    
+  }
+  else
+  {
+  	document.getElementById("warning").style.display = "none";
+  	ChangeSize();
+  }
+}
+
+function ConfirmSize()
+{
+	document.getElementById("warning").style.display = "none";
+	levelSize = pendingSize;
+  ChangeSize();
+}
+
+function CancelSize()
+{
+	document.getElementById("warning").style.display = "none";
+  document.getElementById("size").value = ""+levelSize;
+}
+
+
+//   tileData = tileData.replace('width="30"', 'width="' + (200/levelSize) + '"')
+//   tileData = tileData.replace('height="30"', 'height="' + (200/levelSize) + '"')
+function StepUpSize()
+{
+	var TileField = document.getElementById("TileField").innerHTML;
+  
+  TileField = TileField.replace(/<\/tr>/g, "<td ondrop=\"drop(event)\" ondragover=\"allowDrop(event)\"></td></tr>");
+  //alert(levelSize);
+  
+  var colSize = (TileField.match(/<tr>/g) || []).length+1;
+  
+  TileField = TileField.replace(/<\/table>/g, "<tr>" + Array(colSize+1).join("<td ondrop=\"drop(event)\" ondragover=\"allowDrop(event)\"></td>") +"</tr></table>");
+  //alert(TileField);
+  document.getElementById("TileField").innerHTML = TileField;
+  
+  
+  var board = document.getElementsByTagName("td");
+      
+  for (var i=0; i<board.length; i++)
+  {
+  	board[i].innerHTML = board[i].innerHTML.replace('width="' + (200/prev_levelSize) + '"', 'width="' + (200/levelSize) + '"')
+    board[i].innerHTML = board[i].innerHTML.replace('height="' + (200/prev_levelSize) + '"', 'height="' + (200/levelSize) + '"')
+  }
+  
+  
+}
+
+function StepDownSize()
+{
+	var table = document.getElementsByTagName("Table")[0];
+  
+  var TileField = document.getElementById("TileField").innerHTML;
+  var colSize = (TileField.match(/<tr>/g) || []).length+1;
+  
+  table.deleteRow(table.rows.length -1);
+  for (var i=0; i<table.rows.length; i++)
+  {
+ 		table.rows[i].deleteCell(colSize-2);
+  }
+}
+
+function addMouseEvents()
+{
+
+	var board = document.getElementsByTagName("td");
+  
+  for (var i=0; i<board.length; i++)
+  {
+  	board[i].onmousemove = function(){paint(this, false)};
+    board[i].onclick = function(){paint(this, true)};
+  }
+  
+}
+
+function InitSize()
+{
+  //200/levelSize
+  //alert(3+levelSize);
+  //levelSize=4;
+	document.getElementById("TileField").innerHTML = "<table>"+Array(levelSize+1).join("<tr>"+Array(levelSize+1).join("<td ondrop=\"drop(event)\" ondragover=\"allowDrop(event)\"></td>")+"</tr>")+"</table>";
+
+  var tiles = document.getElementsByTagName("td");
+  //alert((200/levelSize)+"px")
+    for (i=0; i<tiles.length; i++)
+  {
+  	tiles[i].style.width = 2*(200/levelSize)+"px";
+    tiles[i].style.height = 2*(200/levelSize)+"px";
+    //alert(tiles[i].style.padding)
+	}
+	addMouseEvents();
+  document.getElementById("TileField").onmouseleave = function(){mouseDown=0};
+  //document.documentElement.onmouseout = function(){mouseDown--};
+}
+
+function ChangeSize()
+{
+	document.getElementById("SpawnX").max = ""+levelSize;
+  document.getElementById("SpawnY").max = ""+levelSize;
+  
+  if (parseInt(document.getElementById("SpawnX").max)<parseInt(document.getElementById("SpawnX").value))
+  {
+  	document.getElementById("SpawnX").value = document.getElementById("SpawnX").max;
+  }
+  if (parseInt(document.getElementById("SpawnY").max)<parseInt(document.getElementById("SpawnY").value))
+  {
+  	document.getElementById("SpawnY").value = document.getElementById("SpawnY").max;
+  }
+  
+  if (!levelSize)
+  {
+  	levelSize = prev_levelSize;
+    }
+	if (levelSize>prev_levelSize)
+  {
+  	for (var i=0; i<levelSize-prev_levelSize; i++)
+    {
+  		StepUpSize();
+    }
+  }
+  else
+  {
+    for (var i=0; i<prev_levelSize-levelSize; i++)
+    {
+  		StepDownSize(); //I don't know how to write this one yet
+    }
+  }
+    var tiles = document.getElementsByTagName("td");
+  //alert((200/levelSize)+"px")
+    for (i=0; i<tiles.length; i++)
+  {
+  	tiles[i].style.width = 2*(200/levelSize)+"px";
+    tiles[i].style.height = 2*(200/levelSize)+"px";
+    //alert(tiles[i].style.padding)
+	}
+  addMouseEvents();
+}
+/*
+  //200/levelSize
+  //alert(3+levelSize);
+  //levelSize=4;
+	document.getElementById("TileField").innerHTML = "<table>"+Array(levelSize+1).join("<tr>"+Array(levelSize+1).join("<td ondrop=\"drop(event)\" ondragover=\"allowDrop(event)\"></td>")+"</tr>")+"</table>";
+
+  var tiles = document.getElementsByTagName("td");
+  //alert((200/levelSize)+"px")
+    for (i=0; i<tiles.length; i++)
+  {
+  	tiles[i].style.padding = (200/levelSize)+"px";
+    //alert(tiles[i].style.padding)
+	}
+
+}*/
+
+//$(document).ready(InitSize);
+window.onload = InitSize;//InitSize();
+  /*function () 
+ 	{		
+    //alert(5*"hello")
+    //ondrop="drop(event)" ondragover="allowDrop(event)"
+    document.getElementById("TileField").innerHTML = "<table>"+Array(levelSize+1).join("<tr>"+Array(levelSize+1).join("<td ondrop=\"drop(event)\" ondragover=\"allowDrop(event)\"></td>")+"</tr>")+"</table>";
+	}*/
+
+</script>
+  
+  <p id="warning"><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span><span id="warning text">Warning! Downsizing will delete some tiles.</span> <button type="button" onclick="ConfirmSize()">Do it!</button> <button type="button" onclick="CancelSize()">Cancel</button></p>
+
+<div>
+<div class="selector">
+<div class="addable" onclick="select(this)" id="blank" title="The player must step over this tile exactly one time." draggable="true"
+  ondragstart="drag(event)">Blank</div>
+<div class="addable" onclick="select(this)" id="solid" title="The player cannot step over this tile." draggable="true"
+  ondragstart="drag(event)">Solid</div>
+<div class="addable" onclick="select(this)" id="goal" title="If the player steps here after stepping on all other required tiles they will win the game." draggable="true"
+  ondragstart="drag(event)">Goal</div>
+<div class="addable" onclick="select(this)" id="twx" title="The player must step here exactly twice." draggable="true"
+  ondragstart="drag(event)">2x</div>
+<div class="addable" onclick="select(this)" id="thx" title="The player must step here exactly thrice." draggable="true" ondragstart="drag(event)">3x</div>
+<div class="addable" onclick="select(this)" id="death" title="The player must avoid this tile." draggable="true" ondragstart="drag(event)">Death</div>
+<div class="addable" onclick="select(this)" id="bluePortal" title="The player will be transported to the corresponding orange tile." draggable="true" ondragstart="drag(event)">Blue
+Portal</div>
+<div class="addable" onclick="select(this)" id="orangePortal" title="The player will be transported to the corresponding blue tile." draggable="true" ondragstart="drag(event)">Orange
+Portal</div>
+<div class="addable" onclick="select(this)" id="optional" title="The player may step on this tile once." draggable="true" ondragstart="drag(event)">Free</div>
+<!--ondrop=\"drop(event)\" ondragover=\"allowDrop(event)\"-->
+<div class="addable" onclick="select(this)" id="rkey" title="This red key allows the player to pass through red locks." draggable="true" ondragstart="drag(event)">
+<img src="http://s10.postimg.org/p8wj2da3d/RKey.png" width="30" height="30" draggable="false">
+</div>
+
+<div class="addable" onclick="select(this)" id="gkey" title="This green key allows the player to pass through green locks." draggable="true" ondragstart="drag(event)">
+<img src="http://s10.postimg.org/nidi0vsk9/GKey.png" width="30" height="30" draggable="false">
+</div>
+
+<div class="addable" onclick="select(this)" id="bkey" title="This blue key allows the player to pass through blue locks." draggable="true" ondragstart="drag(event)">
+<img src="http://s10.postimg.org/74tihqcex/BKey.png" width="30" height="30" draggable="false">
+</div>
+
+
+<div class="addable" onclick="select(this)" id="rlock" title="This red key allows the player to pass through red locks." draggable="true" ondragstart="drag(event)">
+<img src="http://s3.postimg.org/t0twoyvwj/RLock_Base.png" width="30" height="30" draggable="false">
+</div>
+
+<div class="addable" onclick="select(this)" id="glock" title="This green key allows the player to pass through green locks." draggable="true" ondragstart="drag(event)">
+<img src="http://s3.postimg.org/ydir33jsz/GLock_Base.png" width="30" height="30" draggable="false">
+</div>
+
+<div class="addable" onclick="select(this)" id="block" title="This blue key allows the player to pass through blue locks." draggable="true" ondragstart="drag(event)">
+<img src="http://s3.postimg.org/6et6pz7k3/BLock_Base.png" width="30" height="30" draggable="false">
+</div>
+
+<!-- <div class="addable" onclick="select(this)" id="spawn" title="This is the spawn point. It can go over any block, but there may only be one (for now)." draggable="true" ondragstart="drag(event)">
+<img src="http://s23.postimg.org/qg2h2km8n/circle_512.png" width="15" height="15" draggable="false">
+</div> -->
+
+<p id="SpawnTxt">Spawn Point:</p>
+<input id="SpawnX" value="1" type="number" name="quantity" min="1" max="4" oninput="PollSizeChange()">
+<input id="SpawnY" value="1" type="number" name="quantity" min="1" max="4" oninput="PollSizeChange()">
+
+<p id="GridTxt">Grid Size:</p>
+<input id="size" value="4" type="number" name="quantity" min="2" max="10" oninput="PollSizeChange()">
+</div>
+
+<div id="TileField">
+</div>
+
+<div class="options">
+<input type="button" value="Level Data to Console" onclick="LevelDataToConsole()" style="background-color:grey;color:white;">
+<input type="button" value="Level Data to MesageBox" onclick="LevelDataToMsg()" style="background-color:grey;color:white;">
+<input type="button" value="Clear Board" onclick="reset()" style="position:absolute;left:790px;background-color:red;color:white;">
+<input type="button" value="Submit Level" onclick="submit()" style="position:absolute;left:870px;background-color:green;color:white;">
+
+<form method="POST" action="http://api.cloudstitch.io/samybencherif/magic-form/datasources/sheet" class="form" id="myForm">
+        <input type="hidden" name="Level Data" value="[][]" onclick="submit()">
+        <!--<button type="submit" class="btn btn-success" style="position:absolute;left:870px;top:10px;background-color:green;color:white;">Submit Level</button>-->
+</form>
+
+<!--
+<input type="button" value="Submit Level" onclick="submit()" style="position:absolute;left:870px;background-color:green;color:white;">
+-->
+</div>
+
+<!--
+<table>
+  <tr>
+    <td></td>
+    <td></td> 
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td> 
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td> 
+    <td></td>
+  </tr>
+</table>
+-->
+
+  
+</body>
+
+</html>
+
