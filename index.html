@@ -279,9 +279,9 @@ var spawnPointCount = 0;
 
 function Decode(content, color)
 {
-	if (content=="blank")
+if (content=="blank")
   {
-		  if (color=="rgb(67, 14, 165)")
+      if (color=="rgb(67, 14, 165)")
       	return 0;
       else if (color=="rgb(68, 68, 68)")
       	return 2;
@@ -298,7 +298,7 @@ function Decode(content, color)
   }
   else
   {
-  	if (content=="2x")
+    if (content=="2x")
     	return 4;
     else if (content=="3x")
     	return 5;
@@ -316,6 +316,26 @@ function Decode(content, color)
     	return 13;
     else if (content.indexOf('BLock')>-1)
     	return 15;
+    else if (color=="rgb(0, 0, 255)") //blue portal
+      	{
+      		if (content=="2")
+      			return 16;
+      		else if (content=="3")
+      			return 18;
+      		else if (content=="4")
+      			return 20;
+      	}
+      	//return 7;
+    else if (color=="rgb(255, 128, 0)")  //orange portal
+      	{
+      		if (content=="2")
+      			return 17;
+      		else if (content=="3")
+      			return 19;
+      		else if (content=="4")
+      			return 21;	
+      	}
+      	//return 8;
     else
     	return false;
   }
