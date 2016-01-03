@@ -397,7 +397,11 @@ function StringRep(thearray)
 function reset()
 {
 	if (confirm('This will permanently delete your level !'))
+	{
+		bluePortalCount = 0;
+		orangePortalCount = 0;
 		InitSize();
+	}
 }
 
 function GetLevelPost()
