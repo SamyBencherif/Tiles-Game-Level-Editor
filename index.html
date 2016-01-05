@@ -381,7 +381,7 @@ function GetLevelPost()
     //var spawny = document.getElementById("SpawnY").value-1;
     var spawnx = RawIndex % levelSize;
     var spawny = levelSize-Math.floor(RawIndex/levelSize)-1;
-    return "[["+[parseInt(spawnx), parseInt(spawny)]+"],"  + StringRep(GetLevelData()) + "]";
+    return "[["+[parseInt(spawnx), parseInt(spawny), -1, -1]+"],"  + StringRep(GetLevelData()) + "]";
 }
 
 function submit()
