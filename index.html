@@ -5,22 +5,6 @@
   <meta name="robots" content="noindex, nofollow">
   <meta name="googlebot" content="noindex, nofollow">
 
-  
-  
-
-  
-  
-  
-
-  
-
-  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.js"></script>
-
-  
-
-  
-
-  
 
   
     <link rel="stylesheet" type="text/css" href="/css/result-light.css">
@@ -150,13 +134,11 @@ table{
   left: 570px;
 }
 
-/*#spawn
+#spawn
 {
   background-color:#430EA5;
   left: 610px;
-  padding-top: 7px;
-  height: 23px;
-}*/
+}
 
 #size{
   position: absolute;
@@ -221,20 +203,6 @@ td{
   </style>
 
   <title>Tiles Level Editor by SamyBencherif</title>
-
-  
-    
-
-
-
-
-<script type='text/javascript'>//<![CDATA[
-window.onload=function(){
-
-}//]]> 
-
-</script>
-
   
 </head>
 
@@ -244,16 +212,14 @@ window.onload=function(){
 <!--#724ABC;-->
   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 <script>
-/*
-function funAnimation() {
-    $("div").animate({
-        height: m + "px",
-        width: m + "px"
-    }, 1000);
-    m += 100;
-}
 
-var m = 100;
+/*
+ var board = document.getElementsByTagName("td");
+
+for (var i=0; i<board.length; i++)
+{
+  board[i]
+}
 */
 
 var levelSize = 4;
@@ -272,8 +238,8 @@ var spawnPointCount = 0;
 4: 2x
 5: 3x
 6: Death
-7: Blue Portal
-8: Orange Portal
+7,16,18,20: Blue Portal 1..4
+8,17,19,21: Orange Portal 1..4
 9: Optional
 */
 
@@ -406,8 +372,17 @@ function reset()
 
 function GetLevelPost()
 {
-    var spawnx = document.getElementById("SpawnX").value-1;
-    var spawny = document.getElementById("SpawnY").value-1;
+		var board = document.getElementsByTagName("td");
+    var RawIndex = 0;
+    for (var i=0; i<board.length; i++)
+    {
+    	if (board[i].style.border == "2px solid white")
+      	RawIndex = i;
+    }
+    //var spawnx = document.getElementById("SpawnX").value-1;
+    //var spawny = document.getElementById("SpawnY").value-1;
+    var spawnx = RawIndex % levelSize;
+    var spawny = levelSize-Math.floor(RawIndex/levelSize)-1;
     return StringRep(GetLevelData())+"["+[parseInt(spawnx), parseInt(spawny)]+"]";
 }
 
@@ -604,8 +579,37 @@ function assign(target, mycolor, myContents)
    
    tileData = tileData.replace('width="30"', 'width="' + (200/levelSize) + '"')
    tileData = tileData.replace('height="30"', 'height="' + (200/levelSize) + '"')
-   
-  if (tileData == "Death" || tileData == "2x" || tileData == "3x" || tileData.indexOf('img')>-1)
+  
+  if (tileData == "Spawn\nPoint")
+  {
+    
+		//2px solid white
+    
+    
+    
+     var board = document.getElementsByTagName("td");
+     
+    for (var i=0; i<board.length; i++) //clear all spawn points
+    {
+    	board[i].style.border = "2px solid #724ABC";
+    }
+    
+    for (var i=0; i<board.length; i++)
+    {
+    	if (board[i]==target)
+      {
+      	//alert("yaaa!");
+        board[i].style.border = "2px solid white";
+        if (board[i-1])
+        	board[i-1].style.borderRight = "2px solid white";
+        if (board[i-levelSize])
+        	board[i-levelSize].style.borderBottom = "2px solid white";
+      }
+    }
+    
+		//target.style.border = "2px solid white";
+  }
+  else if (tileData == "Death" || tileData == "2x" || tileData == "3x" || tileData.indexOf('img')>-1)
   {
   	if (tileData == "Death")
     	target.innerHTML = "X";
@@ -881,13 +885,19 @@ Portal</div>
 <img src="http://s3.postimg.org/6et6pz7k3/BLock_Base.png" width="30" height="30" draggable="false">
 </div>
 
+<div class="addable" onclick="select(this)" id="spawn" title="The player must step over this tile exactly one time." draggable="true"
+  ondragstart="drag(event)">Spawn
+Point</div>
+
 <!-- <div class="addable" onclick="select(this)" id="spawn" title="This is the spawn point. It can go over any block, but there may only be one (for now)." draggable="true" ondragstart="drag(event)">
 <img src="http://s23.postimg.org/qg2h2km8n/circle_512.png" width="15" height="15" draggable="false">
 </div> -->
 
+<!--
 <p id="SpawnTxt">Spawn Point:</p>
 <input id="SpawnX" value="1" type="number" name="quantity" min="1" max="4" oninput="PollSizeChange()">
 <input id="SpawnY" value="1" type="number" name="quantity" min="1" max="4" oninput="PollSizeChange()">
+-->
 
 <p id="GridTxt">Grid Size:</p>
 <input id="size" value="4" type="number" name="quantity" min="2" max="10" oninput="PollSizeChange()">
@@ -936,4 +946,13 @@ Portal</div>
 </body>
 
 </html>
+
+
+
+
+
+
+
+
+
 
