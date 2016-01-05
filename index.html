@@ -536,6 +536,9 @@ function assign(target, mycolor, myContents)
     	toBePainted = true;
     }
     
+    if (tileData=="Spawn\nPoint")
+    	toBePainted = false;
+    
    if (tileData=="Blue\nPortal" && target.style.backgroundColor!="rgb(0, 0, 255)" && bluePortalCount<4) // && not replacing blue
    {
    	//alert("blue portal!");
