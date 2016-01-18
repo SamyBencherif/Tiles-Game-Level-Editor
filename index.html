@@ -187,6 +187,17 @@ td{
   padding: 10px;
 }
 
+#qrView
+{
+    position:absolute;
+    margin-left: 260px;
+    margin-top: -472px;
+    border: 2px solid #724ABC;
+    width: 417px;
+    height: 417px;
+    display: none;
+}
+
 #TileField
 {
   padding-left: 250px;
@@ -393,6 +404,19 @@ function LevelDataToMsg()
 function LevelDataToConsole()
 {
     console.log(GetLevelPost());
+}
+
+function LevelDataToQR()
+{
+		document.getElementById("qrView").src = "https://chart.googleapis.com/chart?cht=qr&chl=" + encodeURIComponent(GetLevelPost()) +"&chs=180x180&choe=UTF-8&chld=L|2";
+    document.getElementById("qrView").style.display = "block";
+    document.getElementById("closeQR").style.display = "block";
+}
+
+function closeQR()
+{
+	document.getElementById("qrView").style.display = "none";
+    document.getElementById("closeQR").style.display = "none";
 }
 
 function allowDrop(ev) {
@@ -902,7 +926,7 @@ Point</div>
 </div>
 
 <div class="options">
-<input type="button" value="Level Data to Console" onclick="LevelDataToConsole()" style="background-color:grey;color:white;">
+<input type="button" value="Level Data to QR Code" onclick="LevelDataToQR()" style="background-color:grey;color:white;">
 <input type="button" value="Level Data to MesageBox" onclick="LevelDataToMsg()" style="background-color:grey;color:white;">
 <input type="button" value="Clear Board" onclick="reset()" style="position:absolute;left:790px;background-color:red;color:white;">
 <input type="button" value="Submit Level" onclick="submit()" style="position:absolute;left:870px;background-color:green;color:white;">
@@ -916,6 +940,9 @@ Point</div>
 <input type="button" value="Submit Level" onclick="submit()" style="position:absolute;left:870px;background-color:green;color:white;">
 -->
 </div>
+
+<img id="qrView" src='https://chart.googleapis.com/chart?cht=qr&chl=1234&chs=180x180&choe=UTF-8&chld=L|2' alt=''>
+<input id="closeQR" type="button" value="X" onclick="closeQR()" style="position:absolute;left:655px;top:80px;background-color:black;color:white;display:none;">
 
 <!--
 <table>
