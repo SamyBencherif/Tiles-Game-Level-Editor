@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -386,7 +387,10 @@ function GetLevelPost()
     var spawnx = RawIndex % levelSize;
     var spawny = levelSize-Math.floor(RawIndex/levelSize)-1;
     //return "[[["+[parseInt(spawnx), parseInt(spawny)] + "],[" + [-1, -1]+"]],"  + StringRep(GetLevelData()) + "]";
-    return [levelSize, parseInt(spawnx), parseInt(spawny), -1, -1]+","+GetLevelData()
+    
+    document.getElementById("levelTitle")
+    
+    return [document.getElementById("levelTitle").value.replace(",",""), levelSize, parseInt(spawnx), parseInt(spawny), -1, -1]+","+GetLevelData()
 }
 
 function submit()
@@ -927,9 +931,12 @@ Point</div>
 
 <div class="options">
 <input type="button" value="Level Data to QR Code" onclick="LevelDataToQR()" style="background-color:grey;color:white;">
-<input type="button" value="Level Data to MesageBox" onclick="LevelDataToMsg()" style="background-color:grey;color:white;">
+<input type="button" value="Level Data to Console" onclick="LevelDataToConsole()" style="background-color:grey;color:white;">
 <input type="button" value="Clear Board" onclick="reset()" style="position:absolute;left:790px;background-color:red;color:white;">
 <input type="button" value="Submit Level" onclick="submit()" style="position:absolute;left:870px;background-color:green;color:white;">
+
+<p style="position:absolute;left:366px;top:-5px;">Level Title: </p>
+<input type="text" id="levelTitle" value="Super Fun Level" onclick="" style="position:absolute;left:450px;">
 
 <form method="POST" action="http://api.cloudstitch.io/samybencherif/magic-form/datasources/sheet" class="form" id="myForm">
         <input type="hidden" name="Level Data" value="[][]" onclick="submit()">
